@@ -71,9 +71,9 @@ const setRecipesHTML = (recipes) => {
 };
 
 //use constante recipesJson, for prod
-setArrayOfRecipes(recipesJson);
-setArray(recipesJson);
-setRecipesHTML(recipesJson);
+// setArrayOfRecipes(recipesJson);
+// setArray(recipesJson);
+// setRecipesHTML(recipesJson);
 
 //Show / Hide dropdown list
 const toggleDropdownList = (dropdownList) => {
@@ -82,6 +82,21 @@ const toggleDropdownList = (dropdownList) => {
     else toggleIconDropdown(false);
 };
 
-
+//Search function/
+const search = (word) => {
+    let recipestmp = [];
+    for (let i=0; i<recipesJson.length; i++){
+        let recipetmp = recipesJson[i];
+        if (recipetmp.name.toLowerCase().includes(word.toLowerCase())){
+            recipestmp.push(recipetmp)
+        }
+    }
+    console.log(recipestmp);
+    return recipestmp
+}
+let searchResult = search("coco")
+setArrayOfRecipes(searchResult);
+setArray(searchResult);
+setRecipesHTML(searchResult);
 
 
