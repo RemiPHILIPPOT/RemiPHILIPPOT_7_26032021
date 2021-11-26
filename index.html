@@ -1,132 +1,88 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8" />
-        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-        <meta content="Les petits plats, outil de recettes de cuisine" name="description" />
-        <meta content="Les petits plats, outil de recettes de cuisine, Marmiton, 750g" name="keywords" />
-        <meta name="author" content="Rémi PHILIPPOT" />
-        <meta name="keywords" content="bouquets, fleurs, fleuriste, ciré d'aunis, ciré,cire d'aunis, cire daunis, plantes, livraison de fleurs, charente-maritime, roses, bouquet de roses, saint valentin, fete des meres">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Les petits plats - Consultez nos meilleures recettes de cuisine" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <link rel="icon" href="./assets/img/favicon.ico"/>
-        <link rel="stylesheet" href="./assets/css/sass/style.css">
+    <link rel="icon" type="image/svg" href="./assets/images/logo.svg" />
 
-        <!-- https://fontawesome.com/v4.7.0/icons/ -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;500;700&display=swap" rel="stylesheet" />
+    <!-- Bootsrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" />
 
-        <title>Les petits plats</title>
-    </head>
-    
-    <!-- ======= BODY======= -->
-    <body>
-        <header class="header">
-            <div class="container">
-                <div class="jumbotron-heading headerImgTitle">
-                    <a href="./index.html"><img src="assets/img/logo.png" alt="Logo les petits plats" /></a>
-                    <h1 class="headerTitle">Les petits plats</h1>
-                </div>
+    <link rel="stylesheet" href="./assets/css/style.css" />
 
-                <!-- Search bar-->
-                <form>
-                <div class="input-group p-05">
-                    <input id="inputSearchAll" type="text" class="form-control inputGroupBorder" placeholder="Rechercher un ingrédient, appareil, ustensiles ou une recette"  onkeyup="filterAllByText()">
-                    <div class="input-group-btn">
-                        <button class="btn btn-default buttonGroupBorder" onclick="search()" type="button">
-                            <i class="fa fa-search" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                </div>
-                </form>
-            </div>
+    <title>Accueil | Les petits plats</title>
+  </head>
+  <body>
+    <header class="d-flex justify-content-center">
+      <a href="./index.html">
+        <img class="logo" src="./assets/images/logo.svg" alt="Les petits plats page d'accueil" />
+      </a>
+    </header>
 
-            <div class="mt-3"></div>
+    <main id="main">
+      <div class="container-fluid">
+        <!-- Main Search -->
+        <form class="d-flex my-4 form-inline">
+          <input class="search w-100" type="search" placeholder="Rechercher un ingrédient, un titre ou une description" aria-label="Search" />
+          <button type="button" class="btn">
+            <i class="fas fa-search"></i>
+          </button>
+        </form>
+      </div>
+      <div class="container-fluid">
+        <!-- Selected Tags -->
+        <div class="row">
+          <div class="col-12">
+            <ul class="selected-tags p-0 d-flex"></ul>
+          </div>
+        </div>
+        <!-- Secondary Search -->
+        <div class="row mb-5" id="tags-search">
+          <!-- Ingredients Search -->
+          <div class="mt-2 col-12 col-md-6 col-xl-3">
+            <form class="form__ingredients">
+              <input class="secondary-search p-4 w-100 search__ingredients closed" placeholder="Ingredients" />
+              <img class="closed-search" src="./assets/images/closed-search.svg" alt="" />
+              <img class="opened-search invisible" src="./assets/images/opened-search.svg" alt="" />
+              <ul class="d-flex pl-4 ingredients__results invisible"></ul>
+            </form>
+          </div>
+          <!-- Appliances Search -->
+          <div class="mt-2 col-12 col-md-6 col-xl-3">
+            <form class="form__appareils">
+              <input class="secondary-search p-4 w-100 search__appareils closed" placeholder="Appareils" />
+              <img class="closed-search" src="./assets/images/closed-search.svg" alt="" />
+              <img class="opened-search invisible" src="./assets/images/opened-search.svg" alt="" />
+              <ul class="d-flex pl-4 appliance__results invisible"></ul>
+            </form>
+          </div>
+          <!-- Ustensils Search -->
+          <div class="mt-2 col-12 col-md-6 col-xl-3">
+            <form class="form__ustensiles">
+              <input class="secondary-search p-4 w-100 search__ustensiles closed" placeholder="Ustensiles" />
+              <img class="closed-search" src="./assets/images/closed-search.svg" alt="" />
+              <img class="opened-search invisible" src="./assets/images/opened-search.svg" alt="" />
+              <ul class="d-flex pl-4 ustensils__results invisible"></ul>
+            </form>
+          </div>
+        </div>
+      </div>
 
-            <!-- List of tag -->
-            <div class="container" id="tags"></div>
-
-            <div class="mt-3"></div>
-
-            <!-- Dropdown -->
-            <div class="container">
-                    <div class="row">
-                        <!-- Dropdown ingrédient -->
-                        <div class="col-md-3 contents">
-                            <div class="dropdown dropdownSearch">
-                                <div class="input-group w-200 p-05 pb-0 ">
-                                    <input type="text" class="form-control inputDropdownIngredient" placeholder="Ingrédient"
-                                    id="dropdownInputIngredient" onkeyup="filterByDropdownText('dropdownInputIngredient', 'dropdownIngredientList')"
-                                    aria-label="Ingrédient listes">
-                                    <div class="input-group-btn" onclick="toggleDropdownList('dropdownIngredientList')">
-                                        <button class="btn btn-default btnDropdownIngredient" type="submit">
-                                            <img src="./assets/img/dropdown-icon-down.png" class="icon icon-dropdown-down" alt="Dropdown down icon" />
-                                            <img src="./assets/img/dropdown-icon-up.png" class="icon icon-dropdown-up" alt="Dropdown up icon" />
-                                        </button>
-                                    </div>
-                                </div>
-                                <ul class="dropDownList" id="dropdownIngredientList"></ul>
-                             </div>
-                        </div>
-
-                        <!-- Dropdown appareil -->
-                        <div class="col-md-3 contents">
-                            <div class="dropdown dropdownSearch">
-                                <div class="input-group w-200 p-05 pb-0">
-                                    <input type="text" class="form-control inputDropdownAppareil" placeholder="Appareil" 
-                                    id="dropdownInputAppareil" onkeyup="filterByDropdownText('dropdownInputAppareil', 'dropdownAppareilList')"
-                                    aria-label="Appareil listes">
-                                    <div class="input-group-btn" onclick="toggleDropdownList('dropdownAppareilList')">
-                                        <button class="btn btn-default btnDropdownAppareil" type="submit">
-                                            <img src="./assets/img/dropdown-icon-down.png" class="icon icon-dropdown-down" alt="Dropdown down icon" />
-                                            <img src="./assets/img/dropdown-icon-up.png" class="icon icon-dropdown-up" alt="Dropdown up icon" />
-                                        </button>
-                                    </div>
-                                </div>
-                                <ul class="dropDownList" id="dropdownAppareilList"></ul>
-                            </div>
-                        </div>
-
-                        <!-- Dropdown ustensil -->
-                        <div class="col-md-3 contents">
-                            <div class="dropdown dropdownSearch">
-                                <div class="input-group w-200 p-05 pb-0 ">
-                                    <input type="text" class="form-control inputDropdownUstensil" placeholder="Ustensiles"
-                                    id="dropdownInputUstensil" onkeyup="filterByDropdownText('dropdownInputUstensil', 'dropdownUstensilList')"
-                                    aria-label="Ustensiles listes">
-                                    <div class="input-group-btn" onclick="toggleDropdownList('dropdownUstensilList')">
-                                        <button class="btn btn-default btnDropdownUstensil" type="submit">
-                                            <img src="./assets/img/dropdown-icon-down.png" class="icon icon-dropdown-down" alt="Dropdown down icon" />
-                                            <img src="./assets/img/dropdown-icon-up.png" class="icon icon-dropdown-up" alt="Dropdown up icon" />
-                                        </button>
-                                    </div>
-                                </div>
-                                <ul class="dropDownList" id="dropdownUstensilList"></ul>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-        </header>
-
-        <div class="mt-3"></div>
-
-
-        <main>
-            <div class="album py-5 bg-light">
-                <div class="container">
-                    <div class="row" id="recipes"></div>
-                    <div class="well" id="recipes-not-found">
-                        <p>Aucune recette ne correspond à votre critère… vous pouvez chercher « tarte aux pommes », « poisson », etc</p>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-    <!-- Bootstrap core JavaScript + Javascript
-    ================================================== -->
-    <script src="assets/vendor/jquery-3.2.1.slim.min.js"></script>
-    <script src="assets/vendor/bootstrap.min.js"></script>
-    <script src="assets/vendor/holder.min.js"></script>
-    <script src="data/recipes.js"></script>
-    <script src="assets/js/script.js"></script>    
+      <div class="container-fluid">
+        <!-- List of recipes -->
+        <div class="row g-5" id="recipes"></div>
+      </div>
+    </main>
   </body>
+
+  <script src="src/index.js" type="module"></script>
+  <!-- Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"></script>
+  <!-- Font awesome -->
+  <script src="https://kit.fontawesome.com/aaca489560.js"></script>
 </html>

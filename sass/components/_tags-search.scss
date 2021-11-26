@@ -1,0 +1,27 @@
+.selected-tags {
+  color: white;
+  flex-wrap: wrap;
+  li {
+    font-size: 16px;
+    border-radius: 5px;
+    margin-right: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 5px;
+    &::after {
+      content: "\f057";
+      font-family: "Font Awesome\ 5 Free";
+      padding-left: 13px;
+      font-weight: 400;
+    }
+  }
+  &__ingredients {
+    background-color: $primary;
+  }
+  &__appliances {
+    background-color: $secondary;
+  }
+  &__ustensils {
+    background-color: $tertiary;
+  }
+}
