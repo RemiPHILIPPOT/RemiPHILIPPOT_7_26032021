@@ -11,25 +11,33 @@ export class Recipes {
     this.mainSearchContent;
     this.selectedTags = { ingredients: [], appliances: [], ustensils: [] };
   }
-  mainSearch(userSearch) {
-    this.filteredRecipes = this.recipesList.filter((recipe) => {
-      //Ingrédients
-      let filteredIngredients;
-      recipe.ingredients.filter((ingredient) => {
-        if (ingredient.ingredient.toLowerCase().includes(userSearch)) {
-          filteredIngredients = ingredient;
-        }
-      });
-      //Nom de recette
-      let filteredNameRecipes = recipe.name.toLowerCase().includes(userSearch);
-      //Description de la recette
-      let filteredDescriptionRecipes = recipe.description.toLowerCase().includes(userSearch);
-      //Retour selon les critères
-      return filteredIngredients || filteredNameRecipes || filteredDescriptionRecipes;
-    });
 
+  mainSearch(word) {
+    let recipestmp = [];
+    for (let i = 0; i < this.recipesList.length; i++) {
+      let recipetmp = this.recipesList[i];
+      if (
+        recipetmp.name.toLowerCase().includes(word.toLowerCase()) ||
+        recipetmp.description.toLowerCase().includes(word.toLowerCase())
+      ) {
+        recipestmp.push(recipetmp);
+      } else {
+        const ingredientofrecipe = recipetmp.ingredients;
+        for (let j = 0; j < ingredientofrecipe.length; j++) {
+          let ingredienttmp = ingredientofrecipe[j];
+          if (
+            ingredienttmp.ingredient.toLowerCase().includes(word.toLowerCase())
+          ) {
+            recipestmp.push(recipetmp);
+            j = ingredientofrecipe.length;
+          }
+        }
+      }
+    }
+    this.filteredRecipes = recipestmp;
     this.diplayRecipes(this.filteredRecipes);
   }
+
   filterTagsResultList(currentInput, userSearch) {
     this.filteredIngredientsTags = [];
     this.filteredApplianceTags = [];
@@ -39,12 +47,25 @@ export class Recipes {
       this.filteredRecipes.map((recipes) => {
         recipes.ingredients.map((ingredient) => {
           if (userSearch != undefined) {
-            if (!this.filteredIngredientsTags.includes(ingredient.ingredient.toLowerCase()) && ingredient.ingredient.toLowerCase().includes(userSearch)) {
-              this.filteredIngredientsTags.push(ingredient.ingredient.toLowerCase());
+            if (
+              !this.filteredIngredientsTags.includes(
+                ingredient.ingredient.toLowerCase()
+              ) &&
+              ingredient.ingredient.toLowerCase().includes(userSearch)
+            ) {
+              this.filteredIngredientsTags.push(
+                ingredient.ingredient.toLowerCase()
+              );
             }
           } else {
-            if (!this.filteredIngredientsTags.includes(ingredient.ingredient.toLowerCase())) {
-              this.filteredIngredientsTags.push(ingredient.ingredient.toLowerCase());
+            if (
+              !this.filteredIngredientsTags.includes(
+                ingredient.ingredient.toLowerCase()
+              )
+            ) {
+              this.filteredIngredientsTags.push(
+                ingredient.ingredient.toLowerCase()
+              );
             }
           }
         });
@@ -53,11 +74,20 @@ export class Recipes {
     if (this.currentInput == "appliance") {
       this.filteredRecipes.map((recipes) => {
         if (userSearch != undefined) {
-          if (!this.filteredApplianceTags.includes(recipes.appliance.toLowerCase()) && recipes.appliance.toLowerCase().includes(userSearch)) {
+          if (
+            !this.filteredApplianceTags.includes(
+              recipes.appliance.toLowerCase()
+            ) &&
+            recipes.appliance.toLowerCase().includes(userSearch)
+          ) {
             this.filteredApplianceTags.push(recipes.appliance.toLowerCase());
           }
         } else {
-          if (!this.filteredApplianceTags.includes(recipes.appliance.toLowerCase())) {
+          if (
+            !this.filteredApplianceTags.includes(
+              recipes.appliance.toLowerCase()
+            )
+          ) {
             this.filteredApplianceTags.push(recipes.appliance.toLowerCase());
           }
         }
@@ -67,7 +97,10 @@ export class Recipes {
       this.filteredRecipes.map((recipes) => {
         recipes.ustensils.map((ustensil) => {
           if (userSearch != undefined) {
-            if (!this.filteredUstensilsTags.includes(ustensil.toLowerCase()) && ustensil.toLowerCase().includes(userSearch)) {
+            if (
+              !this.filteredUstensilsTags.includes(ustensil.toLowerCase()) &&
+              ustensil.toLowerCase().includes(userSearch)
+            ) {
               this.filteredUstensilsTags.push(ustensil.toLowerCase());
             }
           } else {
@@ -104,11 +137,21 @@ export class Recipes {
               .map(
                 (ingredient) => `
                 <li class="d-flex flex-wrap">
-                <p class="card__ingredients__name "> ${ingredient.ingredient} </p>  
+                <p class="card__ingredients__name "> ${
+                  ingredient.ingredient
+                } </p>  
                 <div class="d-flex ">
-                ${ingredient.quantity ? `<p class="card__ingredients__quantity"> : ${ingredient.quantity} </p>` : ""}
+                ${
+                  ingredient.quantity
+                    ? `<p class="card__ingredients__quantity"> : ${ingredient.quantity} </p>`
+                    : ""
+                }
                
-                ${ingredient.unit ? ` <p class="card__ingredients__unit">    ${ingredient.unit}  </p>` : ""} 
+                ${
+                  ingredient.unit
+                    ? ` <p class="card__ingredients__unit">    ${ingredient.unit}  </p>`
+                    : ""
+                } 
                 </div>                  
                 </li>
                 `
@@ -136,9 +179,12 @@ export class Recipes {
   displayListOfTags(tagResultsList) {
     let resultListUl = tagResultsList;
     let tagsToHandle;
-    if (this.currentInput == "ingredients") tagsToHandle = this.filteredIngredientsTags;
-    if (this.currentInput == "appliance") tagsToHandle = this.filteredApplianceTags;
-    if (this.currentInput == "ustensils") tagsToHandle = this.filteredUstensilsTags;
+    if (this.currentInput == "ingredients")
+      tagsToHandle = this.filteredIngredientsTags;
+    if (this.currentInput == "appliance")
+      tagsToHandle = this.filteredApplianceTags;
+    if (this.currentInput == "ustensils")
+      tagsToHandle = this.filteredUstensilsTags;
     resultListUl.innerHTML = "";
     tagsToHandle.forEach(
       (tag) =>
@@ -151,16 +197,37 @@ export class Recipes {
   clickOnTagsHandler(tagResultsList, userSearch) {
     tagResultsList.querySelectorAll("li").forEach((tagToAdd) => {
       tagToAdd.addEventListener("click", (e) => {
-        if (this.currentInput == "ingredients" && !this.selectedTags.ingredients.includes(e.target.textContent.toLowerCase().trim())) {
-          this.selectedTags.ingredients.push(e.target.textContent.toLowerCase().trim());
+        if (
+          this.currentInput == "ingredients" &&
+          !this.selectedTags.ingredients.includes(
+            e.target.textContent.toLowerCase().trim()
+          )
+        ) {
+          this.selectedTags.ingredients.push(
+            e.target.textContent.toLowerCase().trim()
+          );
           this.filterRecipesAfterTagSelection(tagResultsList, userSearch);
         }
-        if (this.currentInput == "appliance" && !this.selectedTags.appliances.includes(e.target.textContent.toLowerCase().trim())) {
-          this.selectedTags.appliances.push(e.target.textContent.toLowerCase().trim());
+        if (
+          this.currentInput == "appliance" &&
+          !this.selectedTags.appliances.includes(
+            e.target.textContent.toLowerCase().trim()
+          )
+        ) {
+          this.selectedTags.appliances.push(
+            e.target.textContent.toLowerCase().trim()
+          );
           this.filterRecipesAfterTagSelection(tagResultsList, userSearch);
         }
-        if (this.currentInput == "ustensils" && !this.selectedTags.ustensils.includes(e.target.textContent.toLowerCase().trim())) {
-          this.selectedTags.ustensils.push(e.target.textContent.toLowerCase().trim());
+        if (
+          this.currentInput == "ustensils" &&
+          !this.selectedTags.ustensils.includes(
+            e.target.textContent.toLowerCase().trim()
+          )
+        ) {
+          this.selectedTags.ustensils.push(
+            e.target.textContent.toLowerCase().trim()
+          );
           this.filterRecipesAfterTagSelection(tagResultsList, userSearch);
         }
         this.displayOrRemoveSelectedTags(tagResultsList);
@@ -182,21 +249,36 @@ export class Recipes {
         let appliancesArray = [];
         for (let i in arr1.ingredients) {
           //Push des ingredients de chaque recette dans un tableau vide
-          ingredientsArray.push(arr1.ingredients.map((ingredient) => ingredientsArray.push(ingredient.ingredient.toLowerCase())));
+          ingredientsArray.push(
+            arr1.ingredients.map((ingredient) =>
+              ingredientsArray.push(ingredient.ingredient.toLowerCase())
+            )
+          );
         }
         for (let i in arr1.appliance) {
           //Push des appareils de chaque recette dans un tableau vide
           appliancesArray.push(arr1.appliance.toLowerCase());
         }
 
-        const foundIngredients = arr2.ingredients.every((elt) => ingredientsArray.indexOf(elt) >= 0);
-        const foundAppliances = arr2.appliances.every((elt) => appliancesArray.indexOf(elt) >= 0);
+        const foundIngredients = arr2.ingredients.every(
+          (elt) => ingredientsArray.indexOf(elt) >= 0
+        );
+        const foundAppliances = arr2.appliances.every(
+          (elt) => appliancesArray.indexOf(elt) >= 0
+        );
         const foundUstensils = arr2.ustensils.every((elt) => {
-          const lowerCaseUstensils = arr1.ustensils.map((tag) => tag.toLowerCase());
+          const lowerCaseUstensils = arr1.ustensils.map((tag) =>
+            tag.toLowerCase()
+          );
           return lowerCaseUstensils.indexOf(elt.toLowerCase()) >= 0;
         });
 
-        if (foundIngredients && foundAppliances && foundUstensils && !newArray.includes(recipes)) {
+        if (
+          foundIngredients &&
+          foundAppliances &&
+          foundUstensils &&
+          !newArray.includes(recipes)
+        ) {
           newArray.push(recipes);
         }
       };
@@ -215,26 +297,40 @@ export class Recipes {
     this.selectedTags.appliances.map((tag) => renderTags(tag, "appliances"));
     this.selectedTags.ustensils.map((tag) => renderTags(tag, "ustensils"));
     function renderTags(tag, type) {
-      selectTagsResultList.innerHTML += `<li class="p-3  selected-tags__${type}">${capitalizeFirstLetter(tag)}</li>`;
+      selectTagsResultList.innerHTML += `<li class="p-3  selected-tags__${type}">${capitalizeFirstLetter(
+        tag
+      )}</li>`;
     }
 
     selectTagsResultList.querySelectorAll("li").forEach((tagToRemove) => {
       tagToRemove.addEventListener("click", () => {
         let indexOfTagToRemove;
         if (tagToRemove.classList.contains("selected-tags__ingredients")) {
-          indexOfTagToRemove = this.selectedTags.ingredients.indexOf(tagToRemove.textContent.toLocaleLowerCase());
+          indexOfTagToRemove = this.selectedTags.ingredients.indexOf(
+            tagToRemove.textContent.toLocaleLowerCase()
+          );
           this.selectedTags.ingredients.splice(indexOfTagToRemove, 1);
         }
         if (tagToRemove.classList.contains("selected-tags__appliances")) {
-          indexOfTagToRemove = this.selectedTags.appliances.indexOf(tagToRemove.textContent.toLocaleLowerCase());
+          indexOfTagToRemove = this.selectedTags.appliances.indexOf(
+            tagToRemove.textContent.toLocaleLowerCase()
+          );
           this.selectedTags.appliances.splice(indexOfTagToRemove, 1);
         }
         if (tagToRemove.classList.contains("selected-tags__ustensils")) {
-          indexOfTagToRemove = this.selectedTags.ustensils.indexOf(tagToRemove.textContent.toLocaleLowerCase());
+          indexOfTagToRemove = this.selectedTags.ustensils.indexOf(
+            tagToRemove.textContent.toLocaleLowerCase()
+          );
           this.selectedTags.ustensils.splice(indexOfTagToRemove, 1);
         }
 
-        if (this.selectedTags.ingredients.length == 0 && this.selectedTags.appliances.length == 0 && this.selectedTags.ustensils.length == 0 && this.mainSearchContent != undefined) this.mainSearch(this.mainSearchContent);
+        if (
+          this.selectedTags.ingredients.length == 0 &&
+          this.selectedTags.appliances.length == 0 &&
+          this.selectedTags.ustensils.length == 0 &&
+          this.mainSearchContent != undefined
+        )
+          this.mainSearch(this.mainSearchContent);
         else this.filterRecipesAfterTagSelection(tagResultsList);
 
         this.displayOrRemoveSelectedTags(tagResultsList);
