@@ -20,20 +20,30 @@ export class Recipes {
     this.mainSearchContent;
     this.selectedTags = { ingredients: [], appliances: [], ustensils: [] };
   }
-  mainSearch(userSearch) {
-    const formattedRecipes = new FormattedRecipes(this.recipesList);
-    let filteredIdRecipes = [];
-    for (let i in formattedRecipes.ingredientsFormatted) {
-      if (formattedRecipes.ingredientsFormatted[i].includes(userSearch) || formattedRecipes.nameFormatted[i].includes(userSearch) || formattedRecipes.descriptionFormatted[i].includes(userSearch)) {
-        filteredIdRecipes.push(formattedRecipes.id[i]);
-      }
-    }
-    this.filteredRecipes = this.recipesList.filter((recipe) => {
-      return filteredIdRecipes.includes(recipe.id);
-    });
 
+  mainSearch(word) {
+    let recipestmp = [];
+    this.recipesList.map((recipetmp) => {
+      if (
+        recipetmp.name.toLowerCase().includes(word.toLowerCase()) ||
+        recipetmp.description.toLowerCase().includes(word.toLowerCase())
+      ) {
+        recipestmp.push(recipetmp);
+      } else {
+        const ingredientofrecipe = recipetmp.ingredients;
+        ingredientofrecipe.map((ingredienttmp) => {
+          if (
+            ingredienttmp.ingredient.toLowerCase().includes(word.toLowerCase()) && !recipestmp.filter((r) => r.id === recipetmp.id)
+          ) {
+            recipestmp.push(recipetmp);
+          }
+        })
+      }
+    })
+    this.filteredRecipes = recipestmp;
     this.diplayRecipes(this.filteredRecipes);
   }
+  
   filterTagsResultList(currentInput, userSearch) {
     this.filteredIngredientsTags = [];
     this.filteredApplianceTags = [];
