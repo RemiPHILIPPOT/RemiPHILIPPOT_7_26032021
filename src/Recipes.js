@@ -21,28 +21,14 @@ export class Recipes {
     this.selectedTags = { ingredients: [], appliances: [], ustensils: [] };
   }
 
-  mainSearch(word) {
-    let recipestmp = [];
-    this.recipesList.map((recipetmp) => {
-      if (
-        recipetmp.name.toLowerCase().includes(word.toLowerCase()) ||
-        recipetmp.description.toLowerCase().includes(word.toLowerCase())
-      ) {
-        recipestmp.push(recipetmp);
-      } else {
-        const ingredientofrecipe = recipetmp.ingredients;
-        ingredientofrecipe.map((ingredienttmp) => {
-          if (
-            ingredienttmp.ingredient.toLowerCase().includes(word.toLowerCase()) && !recipestmp.filter((r) => r.id === recipetmp.id)
-          ) {
-            recipestmp.push(recipetmp);
-          }
-        })
-      }
-    })
-    this.filteredRecipes = recipestmp;
-    this.diplayRecipes(this.filteredRecipes);
-  }
+  mainSearch(word) 
+    {
+      this.filteredRecipes = this.recipesList.filter((recipe) => (
+        recipe.name.toLowerCase().includes(word.toLowerCase()) 
+        || recipe.description.toLowerCase().includes(word.toLowerCase())) 
+        || recipe.ingredients.filter((ing) => ing.ingredient.toLowerCase().includes(word.toLowerCase())).length > 0)
+        this.diplayRecipes(this.filteredRecipes);  
+    }
   
   filterTagsResultList(currentInput, userSearch) {
     this.filteredIngredientsTags = [];
